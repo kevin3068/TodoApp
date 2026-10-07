@@ -43,3 +43,36 @@ jobs:
         run: |
           pytest tests/integration
     
+  quality-gate:
+    runs-on: ubuntu-latest
+    needs: 
+      - testes-unitarios
+      - testes-integracao
+    steps:
+      - name: Validar Quality Gate
+        run: |
+          echo "Validando Quality Gate..."
+          echo "Testes unitários aprovados!"
+          echo "Testes de integração aprovados!"
+          echo "Quality Gate liberado!"
+
+  testes-e2e:
+    runs-on: ubuntu-latest
+    needs: 
+      - quality-gate
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar o ambiente virtual
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependências
+        run: |
+          pip install -r requirements.txt
+
+      - name: Executar os testes end-to-end
+        run: |
+          pytest tests/e2e
