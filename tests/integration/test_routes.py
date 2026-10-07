@@ -93,7 +93,7 @@ def test_api_deletar_tarefa_com_sucesso(client):
     id_criado = res_criacao.get_json()["id"]
 
     res_delete = client.delete(f"/api/todos/{id_criado}")
-    assert res_delete.status_code == 200
+    assert res_delete.status_code == 204
     assert "message" in res_delete.get_json()
 
     res_busca = client.get(f"/api/todos/{id_criado}")
