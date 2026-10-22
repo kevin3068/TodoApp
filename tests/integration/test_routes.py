@@ -42,6 +42,24 @@ def test_api_criar_tarefa_sem_titulo_deve_retornar_400(client):
     data = response.get_json()
     assert "error" in data
 
+def test_api_criar_tarefa_com_titulo_apenas_espacos_deve_retornar_400(client):
+    """
+    Testa a validação de erro ao criar tarefa com o campo obrigatório 'title' somente com espaços.
+    """
+    payload = {"description": "Sem título"}
+    response = client.post("/api/todos", json=payload)
+    assert response.status_code == 400
+    assert "error" in response.get_json()
+
+
+    payload = {"description": "Sem título", "title": "   "}
+    response = client.post("/api/todos", json=payload)
+    assert response.status_code == 400
+    assert "error" in response.get_json()
+
+    response = client.get("/api/todos")
+    assert response.status_code == 200
+    assert response.get_json() == []
 
 def test_api_obter_tarefa_por_id_existente(client):
     """
